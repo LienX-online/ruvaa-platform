@@ -1,4 +1,4 @@
-﻿# Ruvaa Platform Extended Local Verification Script with RBAC
+﻿# Ruvaa Platform Extended Local Verification Script with Search Engine
 $baseUrl = 'http://localhost:3000'
 
 Write-Host "1. Testing Server Health..." -ForegroundColor Cyan
@@ -6,11 +6,6 @@ $health = Invoke-RestMethod -Uri "$baseUrl/health" -Method Get
 Write-Host "Success: Service is $($health.status)." -ForegroundColor Green
 
 Write-Host "
-2. Testing RBAC & Editorial Permissions API..." -ForegroundColor Cyan
-$rbacBody = @{
-    username = "editor_ahusan"
-    requestedRole = "Chief Editor"
-    action = "PUBLISH"
-} | ConvertTo-Json
-$rbacRes = Invoke-RestMethod -Uri "$baseUrl/api/auth/permissions/verify" -Method Post -Body $rbacBody -ContentType "application/json"
-Write-Host "Success: RBAC Verified -> User: $($rbacRes.rbac.username) [Role: $($rbacRes.rbac.assignedRole)], Authorized: $($rbacRes.rbac.authorized)" -ForegroundColor Green
+2. Testing Full-Text Search & Tag Indexing API..." -ForegroundColor Cyan
+$searchRes = Invoke-RestMethod -Uri "$baseUrl/api/search?q=Addu&atoll=Addu" -Method Get
+Write-Host "Success: Search Results Found -> $($searchRes.search.resultsCount) matches for query '$($searchRes.search.query)'" -ForegroundColor Green
