@@ -53,7 +53,7 @@
     </div>
 
     <script>
-        const socket = io('http://localhost:3000');
+        const socket = io('https://ruvaa-production.up.railway.app');
         const logs = document.getElementById('logs');
 
         function logMessage(msg) {
@@ -71,7 +71,7 @@
 
         async function loadIslands() {
             try {
-                const res = await fetch('http://localhost:3000/api/islands');
+                const res = await fetch('https://ruvaa-production.up.railway.app/api/islands');
                 const data = await res.json();
                 const listEl = document.getElementById('islandList');
                 listEl.innerHTML = '<ul>' + data.islands.map(i => <li><b>\</b> (\): \</li>).join('') + '</ul>';
@@ -90,3 +90,4 @@
     </script>
 </body>
 </html>
+
