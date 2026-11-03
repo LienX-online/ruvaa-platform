@@ -19,6 +19,10 @@ const io = new Server(httpServer, {
 });
 
 // Health check endpoint for Railway
+app.get('/', (req, res) => {
+  res.status(200).send('Ruvaa Backend Engine is live!');
+});
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'online', service: 'Ruvaa Core Engine', activeConnections: io.engine.clientsCount });
 });
@@ -56,3 +60,4 @@ const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Ruvaa Backend running live on port ${PORT}`);
 });
+
