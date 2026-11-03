@@ -2,31 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ruvaa Local Control Panel</title>
+    <title>Ruvaa — National News & Tourism Hub</title>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #0b132b; color: #fff; padding: 30px; }
-        .card { background: #1c2541; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
-        input, button { padding: 10px; margin: 5px 0; font-size: 16px; }
-        input { width: 100%; max-width: 400px; }
-        button { background: #48cae4; border: none; cursor: pointer; color: #0b132b; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b132b; color: #fff; margin: 0; padding: 20px; }
+        header { text-align: center; padding: 20px 0; border-bottom: 2px solid #1c2541; }
+        header h1 { color: #48cae4; margin: 0; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card { background: #1c2541; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; font-size: 15px; border-radius: 5px; border: none; box-sizing: border-box; }
+        input, select { background: #0b132b; color: #fff; border: 1px solid #48cae4; }
+        button { background: #48cae4; color: #0b132b; font-weight: bold; cursor: pointer; }
         button:hover { background: #00b4d8; }
-        #logs { background: #03071e; padding: 15px; border-radius: 5px; height: 150px; overflow-y: scroll; font-family: monospace; }
+        #logs, #islandList { background: #03071e; padding: 15px; border-radius: 5px; height: 180px; overflow-y: scroll; font-family: monospace; font-size: 13px; }
+        ul { margin: 0; padding-left: 20px; }
     </style>
 </head>
 <body>
-    <h1>Ruvaa Core Development Panel</h1>
-    
-    <div class="card">
-        <h3>1. Test Breaking News WebSocket Broadcast</h3>
-        <input type="text" id="newsInput" placeholder="Enter breaking news headline..." value="Addu City Atoll Tourism Expands">
-        <br>
-        <button onclick="publishNews()">Broadcast Breaking News</button>
+    <header>
+        <h1>Ruvaa ރުވާ</h1>
+        <p>Maldives National News, Atolls & Tourism Command Center</p>
+    </header>
+
+    <div class="container">
+        <!-- Islands & Atolls Module -->
+        <div class="card">
+            <h3>🏝️ Atolls & Islands Module</h3>
+            <button onclick="loadIslands()">Fetch Islands Database</button>
+            <div id="islandList">Click button above to load active island hubs...</div>
+        </div>
+
+        <!-- Real-time Broadcast Module -->
+        <div class="card">
+            <h3>🚨 Publish Breaking News</h3>
+            <select id="islandSelect">
+                <option value="">National Broadcast (All Atolls)</option>
+                <option value="addu">Addu City</option>
+                <option value="male">Malé</option>
+                <option value="fuvahmulah">Fuvahmulah</option>
+            </select>
+            <input type="text" id="newsInput" placeholder="Enter headline..." value="New Tourism Initiative Launched in the Atolls">
+            <button onclick="publishNews()">Broadcast via Socket.IO</button>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Live Event Logs</h3>
-        <div id="logs">Connecting to server...</div>
+    <!-- Live Event Feed -->
+    <div class="card" style="margin-top: 20px;">
+        <h3>📡 Live Network Event Stream</h3>
+        <div id="logs">Connecting to Ruvaa socket network...</div>
     </div>
 
     <script>
@@ -34,22 +57,35 @@
         const logs = document.getElementById('logs');
 
         function logMessage(msg) {
-            logs.innerHTML += <div>[] </div>;
+            logs.innerHTML += <div>[\] \</div>;
             logs.scrollTop = logs.scrollHeight;
         }
 
         socket.on('connect', () => {
-            logMessage(Connected to server with ID: );
+            logMessage(Connected to core engine. Socket ID: \);
         });
 
         socket.on('breaking-news-broadcast', (data) => {
-            logMessage(🚨 BREAKING NEWS RECEIVED: "");
+            logMessage(🚨 BREAKING [\]: "\");
         });
+
+        async function loadIslands() {
+            try {
+                const res = await fetch('http://localhost:3000/api/islands');
+                const data = await res.json();
+                const listEl = document.getElementById('islandList');
+                listEl.innerHTML = '<ul>' + data.islands.map(i => <li><b>\</b> (\): \</li>).join('') + '</ul>';
+                logMessage('Fetched islands database successfully.');
+            } catch (err) {
+                logMessage('Error fetching islands: ' + err.message);
+            }
+        }
 
         function publishNews() {
             const headline = document.getElementById('newsInput').value;
-            socket.emit('publish-breaking-news', { headline, timestamp: new Date() });
-            logMessage(Published news event: "");
+            const islandSlug = document.getElementById('islandSelect').value;
+            socket.emit('publish-breaking-news', { headline, islandSlug, timestamp: new Date() });
+            logMessage(Published news for [\]: "\");
         }
     </script>
 </body>

@@ -1,0 +1,5 @@
+﻿[
+  { "slug": "addu", "name": "Addu City", "atoll": "Seenu", "tagline": "Southernmost cultural and economic hub", "tourismHighlight": "Hithadhoo Nature Park & Dive Spots" },
+  { "slug": "male", "name": "Malé", "atoll": "Kaafu", "tagline": "Capital city and gateway", "tourismHighlight": "Historic landmarks and urban tourism" },
+  { "slug": "fuvahmulah", "name": "Fuvahmulah", "atoll": "Gnaviyani", "tagline": "The unique one-island atoll", "tourismHighlight": "Thoondu beach and tiger shark diving" }
+]
