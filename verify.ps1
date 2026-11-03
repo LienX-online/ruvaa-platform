@@ -1,4 +1,4 @@
-﻿# Ruvaa Platform Extended Local Verification Script with Health Sentinel
+﻿# Ruvaa Platform Extended Local Verification Script with Caching
 $baseUrl = 'http://localhost:3000'
 
 Write-Host "1. Testing Server Health..." -ForegroundColor Cyan
@@ -6,6 +6,9 @@ $health = Invoke-RestMethod -Uri "$baseUrl/health" -Method Get
 Write-Host "Success: Service is $($health.status)." -ForegroundColor Green
 
 Write-Host "
-2. Testing Automated Health Sentinel API..." -ForegroundColor Cyan
-$sentinelRes = Invoke-RestMethod -Uri "$baseUrl/api/sentinel/status" -Method Get
-Write-Host "Success: Sentinel Status -> $($sentinelRes.sentinel.status) (Monitored Routes: $($sentinelRes.sentinel.monitoredRoutesCount))" -ForegroundColor Green
+2. Testing Automated Caching & Performance Optimization API..." -ForegroundColor Cyan
+$cacheBody = @{
+    cacheKey = "addu_atoll_news_cache"
+} | ConvertTo-Json
+$cacheRes = Invoke-RestMethod -Uri "$baseUrl/api/cache/purge" -Method Post -Body $cacheBody -ContentType "application/json"
+Write-Host "Success: Cache Purge -> $($cacheRes.cache.status) (Time: $($cacheRes.cache.executionTimeMs)ms)" -ForegroundColor Green
