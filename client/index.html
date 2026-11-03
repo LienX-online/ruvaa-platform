@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruvaa Local Control Panel</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0b132b; color: #fff; padding: 30px; }
+        .card { background: #1c2541; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        input, button { padding: 10px; margin: 5px 0; font-size: 16px; }
+        input { width: 100%; max-width: 400px; }
+        button { background: #48cae4; border: none; cursor: pointer; color: #0b132b; font-weight: bold; }
+        button:hover { background: #00b4d8; }
+        #logs { background: #03071e; padding: 15px; border-radius: 5px; height: 150px; overflow-y: scroll; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Ruvaa Core Development Panel</h1>
+    
+    <div class="card">
+        <h3>1. Test Breaking News WebSocket Broadcast</h3>
+        <input type="text" id="newsInput" placeholder="Enter breaking news headline..." value="Addu City Atoll Tourism Expands">
+        <br>
+        <button onclick="publishNews()">Broadcast Breaking News</button>
+    </div>
+
+    <div class="card">
+        <h3>Live Event Logs</h3>
+        <div id="logs">Connecting to server...</div>
+    </div>
+
+    <script>
+        const socket = io('http://localhost:3000');
+        const logs = document.getElementById('logs');
+
+        function logMessage(msg) {
+            logs.innerHTML += <div>[] </div>;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        socket.on('connect', () => {
+            logMessage(Connected to server with ID: );
+        });
+
+        socket.on('breaking-news-broadcast', (data) => {
+            logMessage(🚨 BREAKING NEWS RECEIVED: "");
+        });
+
+        function publishNews() {
+            const headline = document.getElementById('newsInput').value;
+            socket.emit('publish-breaking-news', { headline, timestamp: new Date() });
+            logMessage(Published news event: "");
+        }
+    </script>
+</body>
+</html>
