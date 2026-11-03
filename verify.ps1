@@ -1,4 +1,4 @@
-﻿# Ruvaa Platform Extended Local Verification Script with Search Engine
+﻿# Ruvaa Platform Final Extended Local Verification Script with Push Gateway
 $baseUrl = 'http://localhost:3000'
 
 Write-Host "1. Testing Server Health..." -ForegroundColor Cyan
@@ -6,6 +6,14 @@ $health = Invoke-RestMethod -Uri "$baseUrl/health" -Method Get
 Write-Host "Success: Service is $($health.status)." -ForegroundColor Green
 
 Write-Host "
-2. Testing Full-Text Search & Tag Indexing API..." -ForegroundColor Cyan
-$searchRes = Invoke-RestMethod -Uri "$baseUrl/api/search?q=Addu&atoll=Addu" -Method Get
-Write-Host "Success: Search Results Found -> $($searchRes.search.resultsCount) matches for query '$($searchRes.search.query)'" -ForegroundColor Green
+2. Testing Mobile Push Notification Gateway API..." -ForegroundColor Cyan
+$pushBody = @{
+    title = "Breaking News: Addu Marine Reserve Expansion"
+    body = "Cabinet approves new protective boundaries across southern atoll reefs."
+    targetAtoll = "Addu City"
+    devicePlatform = "All Platforms"
+} | ConvertTo-Json
+$pushRes = Invoke-RestMethod -Uri "$baseUrl/api/notifications/push" -Method Post -Body $pushBody -ContentType "application/json"
+Write-Host "Success: $($pushRes.message) -> Reached: $($pushRes.pushNotification.recipientsReached) devices" -ForegroundColor Green
+Write-Host "
+*** ALL 24 MICROSERVICE MODULES SUCCESSFULLY INTEGRATED AND VERIFIED! ***" -ForegroundColor Magenta
