@@ -1,4 +1,4 @@
-﻿# Ruvaa Platform Extended Local Verification Script with AI Headlines
+﻿# Ruvaa Platform Extended Local Verification Script with RBAC
 $baseUrl = 'http://localhost:3000'
 
 Write-Host "1. Testing Server Health..." -ForegroundColor Cyan
@@ -6,10 +6,11 @@ $health = Invoke-RestMethod -Uri "$baseUrl/health" -Method Get
 Write-Host "Success: Service is $($health.status)." -ForegroundColor Green
 
 Write-Host "
-2. Testing AI Headline Rewriting & DhivehiGPT API..." -ForegroundColor Cyan
-$aiBody = @{
-    rawHeadline = "Addu City Council Announces New Coastal Development Project"
-    targetDialect = "Addu Atoll Dialect"
+2. Testing RBAC & Editorial Permissions API..." -ForegroundColor Cyan
+$rbacBody = @{
+    username = "editor_ahusan"
+    requestedRole = "Chief Editor"
+    action = "PUBLISH"
 } | ConvertTo-Json
-$aiRes = Invoke-RestMethod -Uri "$baseUrl/api/ai/rewrite" -Method Post -Body $aiBody -ContentType "application/json"
-Write-Host "Success: Rewritten Title -> $($aiRes.aiRewrite.rewrittenTitle) (Thaana: $($aiRes.aiRewrite.thaanaScript))" -ForegroundColor Green
+$rbacRes = Invoke-RestMethod -Uri "$baseUrl/api/auth/permissions/verify" -Method Post -Body $rbacBody -ContentType "application/json"
+Write-Host "Success: RBAC Verified -> User: $($rbacRes.rbac.username) [Role: $($rbacRes.rbac.assignedRole)], Authorized: $($rbacRes.rbac.authorized)" -ForegroundColor Green
